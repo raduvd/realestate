@@ -1,7 +1,6 @@
 package ro.personal.home.realestate.persistance.model;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,18 +11,23 @@ import java.util.List;
 @ToString
 @Data
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"adId", "squareMeters", "pageType"})})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Ad implements Serializable {
 
-    @Id
-    private String adId;
+    @EmbeddedId
+    AdId adId;
 
-    private Double squareMeters;
-
-    private String pageType;
+    private String state;
 
     private String currency;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "adId")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "adId", referencedColumnName = "adId"),
+            @JoinColumn(name = "squareMeters", referencedColumnName = "squareMeters"),
+            @JoinColumn(name = "pageType", referencedColumnName = "pageType")
+    })
     private List<AdPrice> adPriceList = new ArrayList<>();
 }

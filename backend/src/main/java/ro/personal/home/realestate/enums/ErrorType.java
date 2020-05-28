@@ -1,4 +1,4 @@
-package ro.personal.home.realestate.webDriver.model.enums;
+package ro.personal.home.realestate.enums;
 
 /**
  * Created by vancer at 5/22/2020
@@ -13,5 +13,5 @@ public enum ErrorType {
         this.description = description;
     }
 
-    String description;
+    public String description;
 }

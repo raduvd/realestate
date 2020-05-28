@@ -2,9 +2,9 @@ package ro.personal.home.realestate.webDriver.model.anunt;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ro.personal.home.realestate.webDriver.model.enums.ElementValue;
-import ro.personal.home.realestate.webDriver.model.enums.PageType;
-import ro.personal.home.realestate.webDriver.model.enums.ErrorType;
+import ro.personal.home.realestate.enums.ElementValue;
+import ro.personal.home.realestate.enums.ErrorType;
+import ro.personal.home.realestate.enums.PageType;
 import ro.personal.home.realestate.webDriver.model.Result;
 
 import java.math.BigDecimal;
@@ -14,12 +14,13 @@ public class AnuntTeren extends Anunt {
     //sunt cu . in fata pentru a cauta exact in anuntul current
     public static final By ELEMENT_PRET_METRU_PATRAT = By.xpath(".//div[@class= 'box-pret-mobile']/div[3]");
 
-    private double CONSIDER_ONLY_TEREN_WITH_MP_PRICE_LARGER_THEN = 20;
-    private double CONSIDER_ONLY_TEREN_WITH_MP_PRICE_SMALLER_THEN = 500;
+    private double CONSIDER_ONLY_TEREN_WITH_MP_PRICE_LARGER_THEN = 5;
+    private double CONSIDER_ONLY_TEREN_WITH_MP_PRICE_SMALLER_THEN = 5000;
 
     public AnuntTeren(WebElement elementulAnunt, PageType pageType, Result result) {
-        super(elementulAnunt, pageType,result);
+        super(elementulAnunt, pageType, result);
         this.pretPeMetruPatrat = getPretPeMetruPatratFromElement();
+        this.metriPatrati = getMetripatratiFromElement();
     }
 
     @Override
@@ -30,7 +31,7 @@ public class AnuntTeren extends Anunt {
             result.add(ErrorType.INVALID_VALUE, pretPeMetruPatrat == null ? null : pretPeMetruPatrat.toString(), null, "pret pe metruPatrat non-valid", null, PageType.TEREN);
             return false;
         }
-        return validatePriceCurrency(PageType.TEREN) && validatePretPeMetruPatrat(PageType.TEREN);
+        return validatePriceCurrency(PageType.TEREN) && validatePretPeMetruPatrat(PageType.TEREN) && validateId();
     }
 
     public BigDecimal getPretPeMetruPatratFromElement() {
@@ -46,7 +47,7 @@ public class AnuntTeren extends Anunt {
 
     @Override
     public BigDecimal getMetripatratiFromElement() {
-        return null;
+        return BigDecimal.ZERO;
     }
 
     @Override

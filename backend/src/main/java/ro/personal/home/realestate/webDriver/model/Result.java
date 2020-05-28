@@ -2,9 +2,9 @@ package ro.personal.home.realestate.webDriver.model;
 
 
 import lombok.Data;
-import ro.personal.home.realestate.webDriver.model.enums.ElementValue;
-import ro.personal.home.realestate.webDriver.model.enums.ErrorType;
-import ro.personal.home.realestate.webDriver.model.enums.PageType;
+import ro.personal.home.realestate.enums.ElementValue;
+import ro.personal.home.realestate.enums.ErrorType;
+import ro.personal.home.realestate.enums.PageType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,12 +13,8 @@ import java.util.List;
 @Data
 public class Result implements Serializable {
 
-    //TODO sa pun un obiect de genul ca si parametru pestr o metoda si sa il populez si apoi sa il returnez
-    //TODO Sa initializez primele 3 fielduri, iar restul de fielduri voi folosi metoda add
-    //TODO sa iau numarul asta de pe pagina
-    private Integer numarAnunturiPerPagina;
-    private Integer numarulPaginii;
-    private Integer numarAnunturiProcesate;
+    private Integer numarAnunturiProcesate = 0;
+    private Integer numarulPaginii = 0;
     private List<Errors> allErrorsList = new ArrayList<>();
     private List<Errors> invalidValueList = new ArrayList<>();
     private List<Errors> castingExceptionList = new ArrayList<>();
@@ -57,5 +53,15 @@ public class Result implements Serializable {
                 elementNotFoundList.add(error);
                 break;
         }
+    }
+
+    public Integer addToNumarAnunturiProcesate(Integer numberToAdd) {
+
+        numarAnunturiProcesate = numarAnunturiProcesate + numberToAdd;
+        return numarAnunturiProcesate;
+    }
+
+    public void incrementNumarulPaginii() {
+        numarulPaginii++;
     }
 }

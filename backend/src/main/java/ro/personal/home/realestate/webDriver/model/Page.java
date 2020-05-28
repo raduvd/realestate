@@ -11,16 +11,15 @@ import ro.personal.home.realestate.webDriver.model.anunt.Anunt;
 import ro.personal.home.realestate.webDriver.model.anunt.AnuntApartament;
 import ro.personal.home.realestate.webDriver.model.anunt.AnuntCasa;
 import ro.personal.home.realestate.webDriver.model.anunt.AnuntTeren;
-import ro.personal.home.realestate.webDriver.model.enums.PageType;
-import ro.personal.home.realestate.webDriver.model.enums.ErrorType;
-import ro.personal.home.realestate.webDriver.model.Result;
+import ro.personal.home.realestate.enums.ErrorType;
+import ro.personal.home.realestate.enums.PageType;
 import ro.personal.home.realestate.webDriver.webDriver.WaitDriverImobiliare;
 import ro.personal.home.realestate.webDriver.webDriver.WebDriverImobiliare;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ro.personal.home.realestate.webDriver.model.enums.PageType.*;
+import static ro.personal.home.realestate.enums.PageType.GENERAL;
 
 @Data
 public class Page {
@@ -134,7 +133,7 @@ public class Page {
         } else {
             System.out.println("New Page number is: " + activePage);
             this.pageNumber = activePage;
-            //TODO Increment NUMARUL_PAGINII++;
+            result.incrementNumarulPaginii();
             return true;
         }
     }

@@ -1,7 +1,6 @@
 package ro.personal.home.realestate.persistance.model;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,17 +9,14 @@ import java.time.LocalDate;
 @Entity(name = "adPrice")
 @ToString
 @Data
-@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"adId", "addedAtDate"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"adId", "addedAtDate"})})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AdPrice implements Serializable {
 
-    @Id
-    private String adId;
+    @EmbeddedId
+    AdPriceId adPriceId;
 
-    @Id
-    private LocalDate addedAtDate;
-
-    private Double  squareMeterPrice;
-
-    private Boolean valid;
-
+    private Double squareMeterPrice;
 }

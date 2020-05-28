@@ -1,4 +1,4 @@
-package ro.personal.home.realestate.webDriver.model.enums;
+package ro.personal.home.realestate.enums;
 
 import java.math.BigDecimal;
 

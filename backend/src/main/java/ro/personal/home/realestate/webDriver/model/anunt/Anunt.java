@@ -4,10 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ro.personal.home.realestate.webDriver.model.enums.ElementValue;
-import ro.personal.home.realestate.webDriver.model.enums.PageType;
-import ro.personal.home.realestate.webDriver.model.enums.ErrorType;
 import ro.personal.home.realestate.webDriver.model.Result;
+import ro.personal.home.realestate.enums.ElementValue;
+import ro.personal.home.realestate.enums.ErrorType;
+import ro.personal.home.realestate.enums.PageType;
 
 import java.math.BigDecimal;
 
@@ -17,6 +17,8 @@ public abstract class Anunt {
 
     public static final By ELEMENT_PRICE_CURENCY = By.xpath(".//span[@itemprop= 'priceCurrency']");
     public static final By ELEMENT_PRET = By.xpath(".//div[@class= 'pret']/span");
+    //Acest pret e calculat de Imobiliare, e ca si cum anuntul nu are pret, deci il voi considera invalid si
+    // elementul de mai jos nu il voi folosi nicaieri dar il las aici pentru reminder.
     public static final By ELEMENT_PRET_WITH_EXTRA_DIV = By.xpath(".//div[@class= 'pret']/div/span");
 
     protected WebElement elementulAnunt;
@@ -26,12 +28,14 @@ public abstract class Anunt {
     protected BigDecimal pret;
     protected BigDecimal metriPatrati;
     protected Result result;
+    protected String id;
 
     public Anunt(WebElement elementulAnunt, PageType pageType, Result result) {
         this.result = result;
         this.pageType = pageType;
         this.elementulAnunt = elementulAnunt;
         this.priceCurrency = getPriceCurrencyFromElement();
+        this.id = getIdFromElement();
     }
 
     /**
@@ -116,8 +120,14 @@ public abstract class Anunt {
 
     public abstract BigDecimal getMetripatratiFromElement();
 
+    /**
+     * Unele anunturi au pretul fara TVA, dar TVA-ul la locuinte e complicat, e 5% pentru locuinte sub 120 mp si
+     * conditionat daca esti familie si multe alte chesti. Deci trebuie din pacate sa ignor acest aspect.
+     *
+     * @return
+     */
     public BigDecimal getPretFromElement() {
-        return (BigDecimal) getValueFromElement(ELEMENT_PRET, ELEMENT_PRET_WITH_EXTRA_DIV, ElementValue.PRET_CU_PUNCT);
+        return (BigDecimal) getValueFromElement(ELEMENT_PRET, ELEMENT_PRET, ElementValue.PRET_CU_PUNCT);
     }
 
     public Boolean validatePret(Double largerThen, Double smallerThen, PageType pageType) {
@@ -137,6 +147,23 @@ public abstract class Anunt {
                 || metriPatrati.doubleValue() < largerThen
                 || metriPatrati.doubleValue() > smallerThen) {
             result.add(ErrorType.INVALID_VALUE, metriPatrati == null ? null : metriPatrati.toString(), null, "metruPatrat non-valid", null, pageType);
+            return false;
+        }
+        return true;
+    }
+
+    public String getIdFromElement() {
+        String id = elementulAnunt.getAttribute("id");
+        if (id == null || id.isEmpty() || !id.contains("-"))
+            return null;
+        final String[] split = id.split("-");
+        id = split[1];
+        return id;
+    }
+
+    public boolean validateId() {
+        if (id == null || id.length() < 7 || id.length() > 11) {
+            result.add(ErrorType.INVALID_VALUE, id == null ? null : id.toString(), null, "id non-valid", null, pageType);
             return false;
         }
         return true;
