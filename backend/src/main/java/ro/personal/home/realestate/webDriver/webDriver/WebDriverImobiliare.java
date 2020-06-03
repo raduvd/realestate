@@ -1,8 +1,13 @@
 package ro.personal.home.realestate.webDriver.webDriver;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Component;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 @Component
 public class WebDriverImobiliare {
@@ -28,6 +33,11 @@ public class WebDriverImobiliare {
         webDriver.close();
         webDriver = null;
     }
+
+    public static void refreshPage() {
+        webDriver.navigate().refresh();
+    }
 }
+
 
 

@@ -1,17 +1,21 @@
 import { validateTotayAds } from "./../../api/adcontroller";
-
 import React from "react";
-import Container from "../reusables/Container";
+import Form from "../reusables/Form";
 
 class Validate extends React.Component {
+  onFormSubmit = (event) => {
+    event.preventDefault();
+    validateTotayAds();
+  };
+
   render() {
     return (
-      <Container>
-        <button className="ui button" onClick={() => validateTotayAds()}>
-          Validate Today Ads
-        </button>
-        <h6>Before validating please check all the errors in log.</h6>
-      </Container>
+      <Form
+        instructions="Database Validation Of Today Ads Form"
+        onFormSubmit={this.onFormSubmit}
+        submitButtonTooltipMesage="Before validating please check all the errors in log"
+        buttonText="Validate"
+      ></Form>
     );
   }
 }

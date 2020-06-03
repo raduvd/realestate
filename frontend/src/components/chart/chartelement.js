@@ -1,6 +1,6 @@
 import React from "react";
-import { LineChart } from "./linechart";
-import Container from "./../reusables/Container";
+import { LineChart } from "./LineChart";
+import Container from "../reusables/Container";
 
 export class ChartElement extends React.Component {
   render() {

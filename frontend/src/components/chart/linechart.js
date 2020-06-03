@@ -20,7 +20,8 @@ export class LineChart extends React.Component {
       data: [
         {
           type: "line",
-          toolTipContent: "{x}: {y}",
+          toolTipContent:
+            "{y} - Average <br/>{z} - Number of ads <br/>Date: {x} ",
           dataPoints: this.props.averageList,
         },
       ],

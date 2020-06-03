@@ -7,12 +7,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import ro.personal.home.realestate.enums.ErrorType;
+import ro.personal.home.realestate.enums.PageType;
 import ro.personal.home.realestate.webDriver.model.anunt.Anunt;
 import ro.personal.home.realestate.webDriver.model.anunt.AnuntApartament;
 import ro.personal.home.realestate.webDriver.model.anunt.AnuntCasa;
 import ro.personal.home.realestate.webDriver.model.anunt.AnuntTeren;
-import ro.personal.home.realestate.enums.ErrorType;
-import ro.personal.home.realestate.enums.PageType;
 import ro.personal.home.realestate.webDriver.webDriver.WaitDriverImobiliare;
 import ro.personal.home.realestate.webDriver.webDriver.WebDriverImobiliare;
 
@@ -28,17 +28,18 @@ public class Page {
     public static final By ELEMENT_ANUNT = By.xpath("//div[starts-with(@id, 'anunt-')]");
     public static final By ELEMENT_PARENT_PAGINARE = By.className("index_paginare");
     public static final By ELEMENT_ACTIVE_PAGE_NUMBER = By.xpath("//a[@class ='active']");
+    public static final By ELEMENT_LAST_PAGE = By.xpath("//a[@class ='butonpaginare'][last()]");
 
     private WebDriver webDriver;
     private Integer pageNumber;
     private PageType pageType;
     private Result result;
 
-    public Page(PageType pageType, Result result) {
+    public Page(PageType pageType, Result result, String startPage) {
         this.result = result;
         this.pageType = pageType;
         this.webDriver = WebDriverImobiliare.getWebDriver();
-        webDriver.get(pageType.getLinkToPage());
+        getStartingPageLink(webDriver, startPage);
         waitForPageCookiesAndAcceptIt();
         this.pageNumber = waitForActivePageNumberAndReturnThePageNumber();
         if (pageNumber == null)
@@ -46,24 +47,45 @@ public class Page {
         System.out.println("Page number is: " + pageNumber);
     }
 
+    private void getStartingPageLink(WebDriver webDriver, String startPage) {
+        if (startPage == null || startPage.isEmpty() || startPage.equals("null"))
+            webDriver.get(pageType.getLinkToPage());
+        else
+            webDriver.get(startPage);
+    }
+
+    private WebElement waitForActivePageNumber() {
+        int secondsToWait = 60;
+        final WebElement pageNumberElement;
+
+        //asteptam pana cand elementul apare pe pagina si are o valoare in el
+        WaitDriverImobiliare.
+                getWaitDriver(secondsToWait).
+                until((ExpectedCondition<Boolean>) webDriver -> {
+                    final String text = webDriver.findElement(ELEMENT_ACTIVE_PAGE_NUMBER).getText();
+                    return text != null && !text.isEmpty();
+                });
+        return webDriver.findElement(ELEMENT_ACTIVE_PAGE_NUMBER);
+    }
+
+
     /**
      * This is one of the last element on the page, so when the page is active, we can safely say the page is loaded.
      */
     private Integer waitForActivePageNumberAndReturnThePageNumber() {
-        int secondsToWait = 25;
-        final WebElement pageNumberElement;
+
+        WebElement pageNumberElement;
         try {
-            //asteptam pana cand elementul apare pe pagina si are o valoare in el
-            WaitDriverImobiliare.
-                    getWaitDriver(secondsToWait).
-                    until((ExpectedCondition<Boolean>) webDriver -> {
-                        final String text = webDriver.findElement(ELEMENT_ACTIVE_PAGE_NUMBER).getText();
-                        return text != null && !text.isEmpty();
-                    });
-            pageNumberElement = webDriver.findElement(ELEMENT_ACTIVE_PAGE_NUMBER);
+            pageNumberElement = waitForActivePageNumber();
         } catch (Exception e) {
-            result.add(ErrorType.WAITING_TIMEOUT, ELEMENT_ACTIVE_PAGE_NUMBER.toString(), null, e.getMessage(), e, GENERAL);
-            return null;
+            System.out.println("refreshing page and wait another 60 seconds...");
+            WebDriverImobiliare.refreshPage();
+            try {
+                pageNumberElement = waitForActivePageNumber();
+            } catch (Exception f) {
+                result.add(ErrorType.WAITING_TIMEOUT, ELEMENT_ACTIVE_PAGE_NUMBER.toString(), null, f.getMessage(), f, GENERAL);
+                return null;
+            }
         }
 
         final String activePage = pageNumberElement.getText();
@@ -126,15 +148,48 @@ public class Page {
             return false;
         }
 
-        //wait the next page to pe active
+        //wait the next page to be active
         final Integer activePage = waitForActivePageNumberAndReturnThePageNumber();
-        if (activePage == null || activePage == this.pageNumber) {
+        if (activePage == null || !isPageIncremented(this.pageNumber, activePage)) {
             return false;
         } else {
             System.out.println("New Page number is: " + activePage);
             this.pageNumber = activePage;
-            result.incrementNumarulPaginii();
+            result.incrementnumarulDePaginiProcesate();
             return true;
         }
+    }
+
+    boolean isPageIncremented(Integer oldPageNumber, Integer newPageNumber) {
+        if (oldPageNumber == newPageNumber) {
+            result.add(ErrorType.INVALID_VALUE, newPageNumber.toString(), null, "PAGE NUMBER is the same as old page number, meaning that the page did not incremented after clicking on next page", null, GENERAL);
+            return false;
+        }
+        if (oldPageNumber != newPageNumber - 1) {
+            result.add(ErrorType.INVALID_VALUE, newPageNumber.toString(), null, "New PAGE NUMBER is not incremented after clicking on next page", null, GENERAL);
+            return false;
+        }
+        return true;
+    }
+
+    public Integer getNumberOfPages() {
+        final WebElement lastPage = webDriver.findElement(ELEMENT_LAST_PAGE);
+
+        final String activePage = lastPage.getText();
+        final Integer integer = Integer.valueOf(activePage);
+
+        if (integer == null || integer < 10 || integer > 500)
+            throw new RuntimeException("The number of pages is not valid: " + integer +
+                    ". This was found using the following By: " + ELEMENT_LAST_PAGE);
+        return integer;
+    }
+
+    public Integer getNumberOfAdsPerPage() {
+        final Integer numberOfAds = webDriver.findElements(ELEMENT_ANUNT).size();
+
+        if (numberOfAds == null || numberOfAds <= 0 || numberOfAds > 30)
+            throw new RuntimeException("The number of ads per page, is not valid: " + numberOfAds +
+                    ". This was found using the following By: " + ELEMENT_ANUNT);
+        return numberOfAds;
     }
 }

@@ -19,4 +19,8 @@ public class AdPrice implements Serializable {
     AdPriceId adPriceId;
 
     private Double squareMeterPrice;
+
+    private String state;
+
+    private Double fluctuationInPercentageSinceLastDate;
 }

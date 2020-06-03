@@ -1,6 +1,5 @@
---Here we will put some data to populate the DB at startup - we do it manualy
-INSERT INTO public.ad(adid, squaremeters, pagetype, currency) VALUES (1, 2, 'APARTMENT', 'EUR');
-INSERT INTO public.ad(adid, squaremeters, pagetype, currency) VALUES (2, 5, 'APARTMENT', 'EUR');
+--Some GOOD to have sqls
 
-INSERT INTO public.adprice(adid, squaremeterprice, valid, date) VALUES (1, 54, false, current_date);
-INSERT INTO public.adprice(adid, squaremeterprice, valid, date) VALUES (2, 88, false, current_date);
+--DELETE adprices from a date and their coresponding ads
+--DELETE FROM public.adprice WHERE pageType='APARTAMENT' and addedAtDate ='2020-05-28'
+--DELETE FROM public.ad WHERE adId not in (select adId from public.adPrice)

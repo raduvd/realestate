@@ -1,49 +1,22 @@
 import { combineReducers } from "redux";
-
-const apartmentAverageReducer = (apartmentAverageList = [], action) => {
-  if (action.type === "APARTMENT_AVERAGE_LIST") {
-    return action.apartmentAverageList;
-  } else {
-    return apartmentAverageList;
-  }
-};
-
-const fieldAverageReducer = (fieldAverageList = [], action) => {
-  if (action.type === "FIELD_AVERAGE_LIST") {
-    return action.fieldAverageList;
-  } else {
-    return fieldAverageList;
-  }
-};
-
-const houseAverageReducer = (houseAverageList = [], action) => {
-  if (action.type === "HOUSE_AVERAGE_LIST") {
-    return action.houseAverageList;
-  } else {
-    return houseAverageList;
-  }
-};
-
-const pageTypeReducer = (pageType = null, action) => {
-  if (action.type === "PAGE_TYPE") {
-    return action.pageType;
-  } else {
-    return pageType;
-  }
-};
-
-const numberOfPagesInputReducer = (numberOfPages = 1, action) => {
-  if (action.type === "NUMBER_OF_PAGES") {
-    return action.numberOfPages;
-  } else {
-    return numberOfPages;
-  }
-};
+import * as FormReducers from "./FormReducers";
+import * as ChartReducers from "./ChartReducers";
 
 export const reducers = combineReducers({
-  apartmentAverageList: apartmentAverageReducer,
-  houseAverageList: houseAverageReducer,
-  fieldAverageList: fieldAverageReducer,
-  pageType: pageTypeReducer,
-  numberOfPages: numberOfPagesInputReducer,
+  pageType: FormReducers.pageTypeReducer,
+  numberOfPages: FormReducers.numberOfPagesInputReducer,
+  apartments: ChartReducers.apartmentsReducer,
+  fields: ChartReducers.fieldsReducer,
+  houses: ChartReducers.housesReducer,
+  apartmentFluctuations: ChartReducers.apartmentFluctuationsReducer,
+  fieldFluctuations: ChartReducers.fieldFluctuationsReducer,
+  houseFluctuations: ChartReducers.houseFluctuationsReducer,
+  maxSquareMeters: FormReducers.maxSquareMetersReducer,
+  minSquareMeters: FormReducers.minSquareMetersReducer,
+  maxSquareMeterPrice: FormReducers.maxSquareMeterPriceReducer,
+  minSquareMeterPrice: FormReducers.minSquareMeterPriceReducer,
+  customFluctuationAverages: ChartReducers.customFluctuationAveragesReducer,
+  numberOfAdsFluctuation: ChartReducers.numberOfAdsFluctuationReducer,
+  startingPage: FormReducers.startingPageReducer,
+  latestNumberOfPages: FormReducers.latestNumberOfPagesReducer,
 });

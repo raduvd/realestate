@@ -8,9 +8,12 @@ import java.time.LocalDate;
 
 @Builder
 @Data
-public class AdAverageTO implements Serializable {
+public class ChartTO implements Serializable {
     //This is representing the date in the X axix
     private LocalDate x;
     //This is representing the average in the Y axix
     private Double y;
+    //This is representing the numberOfAds
+    private Integer z;
+
 }

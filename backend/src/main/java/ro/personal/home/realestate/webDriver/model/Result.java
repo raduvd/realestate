@@ -14,18 +14,19 @@ import java.util.List;
 public class Result implements Serializable {
 
     private Integer numarAnunturiProcesate = 0;
-    private Integer numarulPaginii = 0;
+    private Integer numarulDePaginiProcesate = 0;
     private List<Errors> allErrorsList = new ArrayList<>();
     private List<Errors> invalidValueList = new ArrayList<>();
     private List<Errors> castingExceptionList = new ArrayList<>();
     private List<Errors> elementNotFoundList = new ArrayList<>();
     private List<Errors> waitingTimeoutList = new ArrayList<>();
+    private List<Errors> errorInJavaLogicList = new ArrayList<>();
 
     public void add(ErrorType errorType, String value, ElementValue elementValue, String errorMessage, Exception exception, PageType impobilType) {
         if (value == null)
             value = "null";
 
-        if (errorMessage.length() > 130) {
+        if (errorMessage !=null && errorMessage.length() > 130) {
             errorMessage = errorMessage.substring(0, 129);
         }
         final Errors error = Errors.builder().
@@ -52,6 +53,8 @@ public class Result implements Serializable {
             case ELEMENT_NOT_FOUND:
                 elementNotFoundList.add(error);
                 break;
+            case ERROR_IN_JAVA_LOGIC:
+                errorInJavaLogicList.add(error);
         }
     }
 
@@ -61,7 +64,7 @@ public class Result implements Serializable {
         return numarAnunturiProcesate;
     }
 
-    public void incrementNumarulPaginii() {
-        numarulPaginii++;
+    public void incrementnumarulDePaginiProcesate() {
+        numarulDePaginiProcesate++;
     }
 }

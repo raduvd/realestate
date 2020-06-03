@@ -19,11 +19,10 @@ public class Ad implements Serializable {
     @EmbeddedId
     AdId adId;
 
-    private String state;
-
     private String currency;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("addedAtDate asc")
     @JoinColumns({
             @JoinColumn(name = "adId", referencedColumnName = "adId"),
             @JoinColumn(name = "squareMeters", referencedColumnName = "squareMeters"),

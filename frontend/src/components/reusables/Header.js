@@ -21,12 +21,15 @@ class Header extends React.Component {
               <Link to="/" className="item">
                 <i className="chart line icon"></i> Average Sqare Meter Prices
               </Link>
-              <Link to="/changeME" className="item">
-                <i className="chart line icon"></i> Average Number Of Ads
+              <Link to="/fluctuation" className="item">
+                <i className="chart line icon"></i> Fluctuations Average Since
+                Last Date
               </Link>
-              <Link to="/changeMe" className="item">
-                <i className="chart line icon"></i> Custom Average Sqare Meter
-                Prices
+              <Link to="/fluctuation/custom" className="item">
+                <i className="chart line icon"></i> Custom Fluctuations
+              </Link>
+              <Link to="/fluctuation/numberOfAds" className="item">
+                <i className="chart line icon"></i> Number of ads fluctuation
               </Link>
             </div>
           </div>

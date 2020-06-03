@@ -1,17 +1,22 @@
 package ro.personal.home.realestate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ro.personal.home.realestate.controller.model.AdAverageTO;
+import ro.personal.home.realestate.controller.model.ChartTO;
+import ro.personal.home.realestate.controller.model.NumberOfAdsTO;
 import ro.personal.home.realestate.enums.AdState;
 import ro.personal.home.realestate.enums.PageType;
-import ro.personal.home.realestate.persistance.model.Ad;
-import ro.personal.home.realestate.persistance.model.AdPrice;
-import ro.personal.home.realestate.persistance.model.view.simpleaverage.Averages;
+import ro.personal.home.realestate.persistance.model.NumberOfAds;
+import ro.personal.home.realestate.persistance.model.view.Averages;
+import ro.personal.home.realestate.persistance.model.view.IAverages;
 import ro.personal.home.realestate.persistance.repository.AdJpaRepository;
 import ro.personal.home.realestate.persistance.repository.AdPriceJpaRepository;
+import ro.personal.home.realestate.persistance.repository.NumberOfAdsJpaRepository;
+import ro.personal.home.realestate.persistance.repository.view.fluctuationaverage.ApartmentFluctuationAverageJpaRepository;
+import ro.personal.home.realestate.persistance.repository.view.fluctuationaverage.FieldFluctuationAverageJpaRepository;
+import ro.personal.home.realestate.persistance.repository.view.fluctuationaverage.HouseFluctuationAverageJpaRepository;
 import ro.personal.home.realestate.persistance.repository.view.simpleaverage.ApartmentAverageJpaRepository;
 import ro.personal.home.realestate.persistance.repository.view.simpleaverage.FieldAverageJpaRepository;
 import ro.personal.home.realestate.persistance.repository.view.simpleaverage.HouseAverageJpaRepository;
@@ -21,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@EnableSpringDataWebSupport
 public class AdService {
 
     @Autowired
@@ -30,20 +36,59 @@ public class AdService {
     private AdPriceJpaRepository adPriceJpaRepository;
 
     @Autowired
-    ApartmentAverageJpaRepository apartmentAverageJpaRepository;
+    private ApartmentAverageJpaRepository apartmentAverageJpaRepository;
 
     @Autowired
-    HouseAverageJpaRepository houseAverageJpaRepository;
+    private HouseAverageJpaRepository houseAverageJpaRepository;
 
     @Autowired
-    FieldAverageJpaRepository fieldAverageJpaRepository;
+    private FieldAverageJpaRepository fieldAverageJpaRepository;
+
+    @Autowired
+    private ApartmentFluctuationAverageJpaRepository apartmentFluctuationAverageJpaRepository;
+
+    @Autowired
+    private HouseFluctuationAverageJpaRepository houseFluctuationAverageJpaRepository;
+
+    @Autowired
+    private FieldFluctuationAverageJpaRepository fieldFluctuationAverageJpaRepository;
+
+    @Autowired
+    private NumberOfAdsJpaRepository numberOfAdsJpaRepository;
 
     @Transactional
     public void validateTodayAds() {
-        adJpaRepository.updateState(AdState.VALID.name(), LocalDate.now());
+        adPriceJpaRepository.updateState(AdState.VALID.name(), LocalDate.now());
     }
 
-    public List<AdAverageTO> getAdAverage(PageType pageType) {
+    public NumberOfAdsTO getNumberOfAds() {
+        return mapNumberOfAdsToTO(numberOfAdsJpaRepository.findAll());
+    }
+
+    public List<NumberOfAds> getLatestNumberOfAds() {
+        return numberOfAdsJpaRepository.getLatestNumberOfAds();
+    }
+
+    NumberOfAdsTO mapNumberOfAdsToTO(List<NumberOfAds> numberOfAds) {
+        return NumberOfAdsTO.builder().
+                apartments(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.APARTAMENT)).
+                fields(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.CASE)).
+                houses(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.TEREN)).
+                build();
+    }
+
+    private List<ChartTO> filterNumberOfAdsAndMapToChartTO(List<NumberOfAds> numberOfAds, PageType pageType) {
+        return numberOfAds.stream().
+                filter(n -> pageType.name().equals(n.getNumberOfAdsId().getPageType())).
+                map(n -> ChartTO.builder().
+                        x(n.getNumberOfAdsId().getAddedAtDate()).
+                        y(Double.valueOf(n.getNumberOfAdsPerPage() * n.getNumberOfPages())).
+                        z(n.getNumberOfAdsPerPage() * n.getNumberOfPages())
+                        .build()).
+                collect(Collectors.toList());
+    }
+
+    public List<ChartTO> getAdAverage(PageType pageType) {
         List<? extends Averages> averages;
         switch (pageType) {
             case APARTAMENT:
@@ -59,38 +104,47 @@ public class AdService {
             default:
                 throw new RuntimeException("There is no averages except for Apartment, Teren or Case");
         }
-        return mapAveragesToAdAverageTO(averages);
+        return mapAveragesToChartTO(averages);
     }
 
-    public Ad findById(String adId) {
-        //return adJpaRepository.findById(adId).get();
-        //was implemented just for test
-        return null;
+    public List<ChartTO> getAdFluctuationAverage(PageType pageType) {
+        List<? extends Averages> averages;
+        switch (pageType) {
+            case APARTAMENT:
+                averages = apartmentFluctuationAverageJpaRepository.findAll();
+                break;
+            case TEREN:
+                averages = fieldFluctuationAverageJpaRepository.findAll();
+                break;
+            case CASE:
+                averages = houseFluctuationAverageJpaRepository.findAll();
+                break;
+            case GENERAL:
+            default:
+                throw new RuntimeException("There is no averages except for Apartment, Teren or Case");
+        }
+        final List<ChartTO> chartTOS = mapAveragesToChartTO(averages);
+
+        for (int i = 0; i < chartTOS.size(); i++) {
+            if (i == 0)
+                continue;
+            Double oldValue = chartTOS.get(i - 1).getY();
+            chartTOS.get(i).setY(chartTOS.get(i).getY() + oldValue);
+        }
+        return chartTOS;
     }
 
-    //Maybe use in the future?
-    private List<LocalDate> getAllUniqueDates() {
-        Specification<AdPrice> uniqueDates = (root, criteriaQuery, criteriaBuilder) -> {
-            criteriaQuery.select(root.get("addedAtDate")).distinct(true);
-            return null;
-        };
-        return adPriceJpaRepository.findAll(uniqueDates).stream().map(e -> e.getAdPriceId().getAddedAtDate()).collect(Collectors.toList());
+    public List<ChartTO> customFluctuations(String pageType, Integer maxSquareMeters, Integer minSquareMeters, Integer maxSquareMetersPrice, Integer minSquareMetersPrice) {
+        final List<IAverages> customFluctuationAverages = adJpaRepository.customFluctuations(pageType, maxSquareMeters, minSquareMeters, maxSquareMetersPrice, minSquareMetersPrice);
+        return mapAveragesToChartTO(customFluctuationAverages);
     }
 
-    private List<AdAverageTO> mapAveragesToAdAverageTO(List<? extends Averages> averages) {
+    private List<ChartTO> mapAveragesToChartTO(List<? extends IAverages> averages) {
         return averages.stream().
-                map(a -> AdAverageTO.builder().x(a.getAddedAtDate()).y(a.getSquareMeterPriceAverage()).build()).
+                map(a -> ChartTO.builder().
+                        x(a.getAddedAtDate()).
+                        y(a.getSquareMeterPriceAverage()).
+                        z(a.getNumberOfAds()).build()).
                 collect(Collectors.toList());
-    }
-
-    //Maybe use in the future?
-    private List<AdPrice> getAllPricesWithTypeAndDate(LocalDate date, PageType pageType) {
-        Specification<AdPrice> adPricesWithSameTypeAndDate = (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get("pageType"), pageType.name()),
-                    criteriaBuilder.equal(root.get("addedAtDate"), date));
-
-        };
-        return adPriceJpaRepository.findAll(adPricesWithSameTypeAndDate);
     }
 }

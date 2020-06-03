@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import ro.personal.home.realestate.enums.ElementValue;
 import ro.personal.home.realestate.enums.ErrorType;
 import ro.personal.home.realestate.enums.PageType;
+import ro.personal.home.realestate.webDriver.Calculations;
 import ro.personal.home.realestate.webDriver.model.Result;
 
 import java.math.BigDecimal;
@@ -12,46 +13,41 @@ import java.math.BigDecimal;
 public class AnuntTeren extends Anunt {
 
     //sunt cu . in fata pentru a cauta exact in anuntul current
-    public static final By ELEMENT_PRET_METRU_PATRAT = By.xpath(".//div[@class= 'box-pret-mobile']/div[3]");
+    public static final By ELEMENT_METRI_PATRATI = By.xpath(".//ul[@class= 'caracteristici']/li[1]");
 
-    private double CONSIDER_ONLY_TEREN_WITH_MP_PRICE_LARGER_THEN = 5;
-    private double CONSIDER_ONLY_TEREN_WITH_MP_PRICE_SMALLER_THEN = 5000;
+    private double CONSIDER_ONLY_FIELDS_WITH_PRICE_LARGER_THEN = 2000;
+    private double CONSIDER_ONLY_FIELDS_WITH_PRICE_SMALLER_THEN = 10000000;
+    private double CONSIDER_ONLY_FIELDS_WITH_MP_LARGER_THEN = 100;
+    private double CONSIDER_ONLY_FIELDS_WITH_MP_SMALLER_THEN = 50000;
 
     public AnuntTeren(WebElement elementulAnunt, PageType pageType, Result result) {
         super(elementulAnunt, pageType, result);
-        this.pretPeMetruPatrat = getPretPeMetruPatratFromElement();
+        this.pret = getPretFromElement();
         this.metriPatrati = getMetripatratiFromElement();
+        this.pretPeMetruPatrat = getPretPeMetruPatratFromElement();
     }
 
     @Override
     public boolean validateAnunt() {
-        if (pretPeMetruPatrat == null ||
-                pretPeMetruPatrat.doubleValue() < CONSIDER_ONLY_TEREN_WITH_MP_PRICE_LARGER_THEN ||
-                pretPeMetruPatrat.doubleValue() > CONSIDER_ONLY_TEREN_WITH_MP_PRICE_SMALLER_THEN) {
-            result.add(ErrorType.INVALID_VALUE, pretPeMetruPatrat == null ? null : pretPeMetruPatrat.toString(), null, "pret pe metruPatrat non-valid", null, PageType.TEREN);
-            return false;
-        }
-        return validatePriceCurrency(PageType.TEREN) && validatePretPeMetruPatrat(PageType.TEREN) && validateId();
+        return validatePret(CONSIDER_ONLY_FIELDS_WITH_PRICE_LARGER_THEN, CONSIDER_ONLY_FIELDS_WITH_PRICE_SMALLER_THEN, PageType.TEREN)
+                && validateMetriPatrati(CONSIDER_ONLY_FIELDS_WITH_MP_LARGER_THEN, CONSIDER_ONLY_FIELDS_WITH_MP_SMALLER_THEN, PageType.TEREN)
+                && validatePriceCurrency(PageType.TEREN) && validatePretPeMetruPatrat(PageType.TEREN)
+                && validateId();
     }
 
     public BigDecimal getPretPeMetruPatratFromElement() {
-        BigDecimal value;
-        try {
-            value = (BigDecimal) getValueFromElement(ELEMENT_PRET_METRU_PATRAT, ELEMENT_PRET_METRU_PATRAT, ElementValue.PRET_CU_VIRGULA);
-        } catch (Exception e) {
-            result.add(ErrorType.ELEMENT_NOT_FOUND, ELEMENT_PRET_METRU_PATRAT.toString(), ElementValue.PRET_CU_VIRGULA, e.getMessage(), e, PageType.TEREN);
-            return null;
-        }
-        return value;
+        return Calculations.calculatePretPeMetruPatrat(pret, metriPatrati);
     }
 
     @Override
     public BigDecimal getMetripatratiFromElement() {
-        return BigDecimal.ZERO;
-    }
-
-    @Override
-    public BigDecimal getPretFromElement() {
-        return null;
+        BigDecimal value;
+        try {
+            value = (BigDecimal) getValueFromElement(ELEMENT_METRI_PATRATI, ELEMENT_METRI_PATRATI, ElementValue.PRET_CU_VIRGULA);
+        } catch (Exception e) {
+            result.add(ErrorType.ELEMENT_NOT_FOUND, ELEMENT_METRI_PATRATI.toString(), ElementValue.PRET_CU_VIRGULA, e.getMessage(), e, PageType.TEREN);
+            return null;
+        }
+        return value;
     }
 }
