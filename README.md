@@ -9,8 +9,8 @@ Launch locally:
     - npm start
 
 Prerequisite:
-- postgresql server with a DB called realestate, user realestate (pass admin)
+- postgresql server with a DB called realestate, user realestate (pass admin). Or modify these in prop file.
 - maven, java JDK (with env paths)
 - nodejs
-- plugin Moesif Origin & CORS Changer, turned on
+- plugin Moesif Origin & CORS Changer, turned on, or add cors handling.
 - Chrome driver installed at: C:\Users\vancer\Desktop\Libraryes & Sources\chromedriver_win32\chromedriver.exe or change the property to new location. This driver should be compatible with your chrome browser (use the same version).
