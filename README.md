@@ -13,3 +13,4 @@ Prerequisite:
 - maven, java JDK (with env paths)
 - nodejs
 - plugin Moesif Origin & CORS Changer, turned on
+- Chrome driver installed at: C:\Users\vancer\Desktop\Libraryes & Sources\chromedriver_win32\chromedriver.exe or change the property to new location
