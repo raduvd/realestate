@@ -51,7 +51,7 @@ public class Page {
         if (startPage == null || startPage.isEmpty() || startPage.equals("null"))
             webDriver.get(pageType.getLinkToPage());
         else
-            webDriver.get(startPage);
+            webDriver.get(pageType.getLinkToPage()+"?pagina="+startPage);
     }
 
     private WebElement waitForActivePageNumber() {
