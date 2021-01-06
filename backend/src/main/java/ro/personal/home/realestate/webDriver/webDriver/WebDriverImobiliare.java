@@ -1,6 +1,7 @@
 package ro.personal.home.realestate.webDriver.webDriver;
 
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class WebDriverImobiliare {
         if (webDriver == null) {
             System.setProperty("webdriver.chrome.driver", CHROMEDRIVER_EXECUTABLE);
             webDriver = new ChromeDriver();
-            webDriver.manage().window().maximize();
+            webDriver.manage().window().setPosition(new Point(-2000, 0));
         }
         return webDriver;
     }

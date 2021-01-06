@@ -40,10 +40,10 @@ public class WebDriverService {
         for (PageType pageType : PageType.values()) {
             if (pageType.equals(GENERAL)) continue;
             Result result = new Result();
-            Page page = new Page(pageType, result, null);
-
             final NumberOfAds numberOfAds;
+
             try {
+                Page page = new Page(pageType, result, null);
                 numberOfAds = NumberOfAds.builder().
                         numberOfPages(page.getNumberOfPages()).
                         numberOfAdsPerPage(page.getNumberOfAdsPerPage()).
