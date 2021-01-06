@@ -22,7 +22,7 @@ public interface AdJpaRepository extends JpaRepository<Ad, AdId>, JpaSpecificati
                     "      from public.adprice p\n" +
                     "               left join public.ad a\n" +
                     "                         ON a.adId = p.adId AND a.squareMeters = p.squareMeters AND a.pageType = p.pageType\n" +
-                    "      where a.pageType = :pageType and a.state = 'VALID' and p.fluctuationInPercentageSinceLastDate is not null\n" +
+                    "      where a.pageType = :pageType and p.state = 'VALID' and p.fluctuationInPercentageSinceLastDate is not null\n" +
                     "\t and :maxSquareMeters >= a.squareMeters and a.squareMeters >= :minSquareMeters and p.squareMeterPrice <= :maxSquareMeterPrice and p.squareMeterPrice >= :minSquareMetersPrice  ) as x\n" +
                     "group by (addedAtDate);", nativeQuery = true)
     public List<IAverages> customFluctuations(

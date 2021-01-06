@@ -70,7 +70,7 @@ public class Page {
 
 
     /**
-     * This is one of the last element on the page, so when the page is active, we can safely say the page is loaded.
+     * "ActivePageNumber" is one of the last element on the page, so when the page is active, we can safely say the page is loaded.
      */
     private Integer waitForActivePageNumberAndReturnThePageNumber() {
 
