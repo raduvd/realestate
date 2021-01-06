@@ -72,8 +72,8 @@ public class AdService {
     NumberOfAdsTO mapNumberOfAdsToTO(List<NumberOfAds> numberOfAds) {
         return NumberOfAdsTO.builder().
                 apartments(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.APARTAMENT)).
-                fields(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.CASE)).
-                houses(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.TEREN)).
+                fields(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.TEREN)).
+                houses(filterNumberOfAdsAndMapToChartTO(numberOfAds, PageType.CASE)).
                 build();
     }
 
