@@ -84,6 +84,7 @@ public class Page {
         } catch (Exception e) {
             System.out.println("------------------------------------------- refreshing page and wait another 60 seconds... -------------------------------");
             WebDriverImobiliare.refreshPage();
+            WebDriverImobiliare.refreshPage();
             try {
                 pageNumberElement = waitForActivePageNumber();
             } catch (Exception f) {
@@ -165,11 +166,11 @@ public class Page {
     }
 
     boolean isPageIncremented(Integer oldPageNumber, Integer newPageNumber) {
-        if (oldPageNumber == newPageNumber) {
+        if (oldPageNumber.equals(newPageNumber)) {
             result.add(ErrorType.INVALID_VALUE, newPageNumber.toString(), null, "PAGE NUMBER is the same as old page number, meaning that the page did not incremented after clicking on next page", null, GENERAL);
             return false;
         }
-        if (oldPageNumber != newPageNumber - 1) {
+        if (!oldPageNumber.equals(newPageNumber - 1)) {
             result.add(ErrorType.INVALID_VALUE, newPageNumber.toString(), null, "New PAGE NUMBER is not incremented after clicking on next page", null, GENERAL);
             return false;
         }
