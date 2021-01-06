@@ -58,7 +58,7 @@ public class WebDriverService {
             }
             WebDriverImobiliare.closeWebDriver();
             numberOfAdsJpaRepository.save(numberOfAds);
-            System.out.println("Saved in DB: " + numberOfAds);
+            System.out.println("------------------------------------ Saved in DB: " + numberOfAds);
         }
     }
 
@@ -154,15 +154,15 @@ public class WebDriverService {
     }
 
     private void printResultInConsoleLog(Result result) {
-        System.out.println("..\nSUM-UP\n..\n");
-        System.out.println("TEORETIC TREBUIA SA FIE APROXIMATIV " + result.getNumarulDePaginiProcesate() * 30 + " ANUNTURI PROCESATE (30 anunturi per pagina * numarul de pagini procesate).");
-        System.out.println("MOMENTAN SUNT: " + result.getNumarAnunturiProcesate() + " ANUNTURI PROCESATE.");
-        System.out.println("TOTAL number of errors: " + result.getAllErrorsList().size());
-        System.out.println(ErrorType.INVALID_VALUE.name() + " - number of errors: " + result.getInvalidValueList().size() + " ---- description: " + ErrorType.INVALID_VALUE.description);
-        System.out.println(ErrorType.WAITING_TIMEOUT.name() + " - number of errors: " + result.getWaitingTimeoutList().size() + " ---- description: " + ErrorType.WAITING_TIMEOUT.description);
-        System.out.println(ErrorType.CASTING_EXCEPTION.name() + " - number of errors: " + result.getCastingExceptionList().size() + " ---- description: " + ErrorType.CASTING_EXCEPTION.description);
-        System.out.println(ErrorType.ELEMENT_NOT_FOUND.name() + " - number of errors: " + result.getElementNotFoundList().size() + " ---- description: " + ErrorType.ELEMENT_NOT_FOUND.description);
-        System.out.println(ErrorType.ERROR_IN_JAVA_LOGIC.name() + " - number of errors: " + result.getErrorInJavaLogicList().size() + " ---- description: " + ErrorType.ERROR_IN_JAVA_LOGIC.description);
+        System.out.println("------------------------------------ ..\nSUM-UP\n..\n");
+        System.out.println("------------------------------------TEORETIC TREBUIA SA FIE APROXIMATIV " + result.getNumarulDePaginiProcesate() * 30 + " ANUNTURI PROCESATE (30 anunturi per pagina * numarul de pagini procesate).");
+        System.out.println("------------------------------------MOMENTAN SUNT: " + result.getNumarAnunturiProcesate() + " ANUNTURI PROCESATE.");
+        System.out.println("------------------------------------TOTAL number of errors: " + result.getAllErrorsList().size());
+        System.out.println("------------------------------------" + ErrorType.INVALID_VALUE.name() + " - number of errors: " + result.getInvalidValueList().size() + " ---- description: " + ErrorType.INVALID_VALUE.description);
+        System.out.println("------------------------------------" +ErrorType.WAITING_TIMEOUT.name() + " - number of errors: " + result.getWaitingTimeoutList().size() + " ---- description: " + ErrorType.WAITING_TIMEOUT.description);
+        System.out.println("------------------------------------" +ErrorType.CASTING_EXCEPTION.name() + " - number of errors: " + result.getCastingExceptionList().size() + " ---- description: " + ErrorType.CASTING_EXCEPTION.description);
+        System.out.println("------------------------------------" +ErrorType.ELEMENT_NOT_FOUND.name() + " - number of errors: " + result.getElementNotFoundList().size() + " ---- description: " + ErrorType.ELEMENT_NOT_FOUND.description);
+        System.out.println("------------------------------------" +ErrorType.ERROR_IN_JAVA_LOGIC.name() + " - number of errors: " + result.getErrorInJavaLogicList().size() + " ---- description: " + ErrorType.ERROR_IN_JAVA_LOGIC.description);
 
         final List<Errors> sortedAllErrorList = result.getAllErrorsList().stream().
                 sorted(Comparator.comparing(Errors::getValue)).collect(Collectors.toList());

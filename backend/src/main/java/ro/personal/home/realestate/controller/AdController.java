@@ -20,7 +20,7 @@ public class AdController {
 
     @GetMapping(value = "/validate", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public void validateTodayAds() {
-        System.out.println("Validating...");
+        System.out.println("------------------------------------ Validating...");
         adService.validateTodayAds();
     }
 

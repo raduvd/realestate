@@ -44,14 +44,18 @@ public class Page {
         this.pageNumber = waitForActivePageNumberAndReturnThePageNumber();
         if (pageNumber == null)
             throw new RuntimeException("CANNOT GET PAST THE FIRST PAGE");
-        System.out.println("Page number is: " + pageNumber);
+        System.out.println("------------------------------------Page number is: " + pageNumber + "------------------------------------");
     }
 
     private void getStartingPageLink(WebDriver webDriver, String startPage) {
-        if (startPage == null || startPage.isEmpty() || startPage.equals("null"))
-            webDriver.get(pageType.getLinkToPage());
-        else
-            webDriver.get(pageType.getLinkToPage()+"?pagina="+startPage);
+
+        String linkToPage = pageType.getLinkToPage();
+
+        if (startPage != null && !startPage.isEmpty() && !startPage.equals("null"))
+            linkToPage = linkToPage +"?pagina="+startPage;
+
+        webDriver.get(linkToPage);
+        System.out.println("------------------------------------ We will try to open the following link: "+ linkToPage);
     }
 
     private WebElement waitForActivePageNumber() {
@@ -78,7 +82,7 @@ public class Page {
         try {
             pageNumberElement = waitForActivePageNumber();
         } catch (Exception e) {
-            System.out.println("refreshing page and wait another 60 seconds...");
+            System.out.println("------------------------------------------- refreshing page and wait another 60 seconds... -------------------------------");
             WebDriverImobiliare.refreshPage();
             try {
                 pageNumberElement = waitForActivePageNumber();
@@ -153,7 +157,7 @@ public class Page {
         if (activePage == null || !isPageIncremented(this.pageNumber, activePage)) {
             return false;
         } else {
-            System.out.println("New Page number is: " + activePage);
+            System.out.println("------------------------------------New Page number is: " + activePage);
             this.pageNumber = activePage;
             result.incrementnumarulDePaginiProcesate();
             return true;
