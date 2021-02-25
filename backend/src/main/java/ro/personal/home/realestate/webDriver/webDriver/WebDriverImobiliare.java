@@ -31,6 +31,8 @@ public class WebDriverImobiliare {
     }
 
     public static void closeWebDriver() {
+        if(webDriver == null)
+            return;
         webDriver.close();
         webDriver = null;
     }
