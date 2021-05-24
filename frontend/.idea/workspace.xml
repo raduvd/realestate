@@ -19,7 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c0be1cef-fc6e-41c8-9e87-c68684d73226" name="Default Changelist" comment="" />
+    <list default="true" id="c0be1cef-fc6e-41c8-9e87-c68684d73226" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/ro/personal/home/realestate/webDriver/model/Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/ro/personal/home/realestate/webDriver/model/Page.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,6 +59,10 @@
       <option name="presentableId" value="Default" />
       <updated>1603193237004</updated>
       <workItem from="1603193238103" duration="1278000" />
+      <workItem from="1603530335141" duration="601000" />
+      <workItem from="1605949497331" duration="3000" />
+      <workItem from="1609931679582" duration="1598000" />
+      <workItem from="1616418013993" duration="2000" />
     </task>
     <servers />
   </component>
@@ -72,6 +79,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="638" y="305" key="#ESLint" timestamp="1603193709941">

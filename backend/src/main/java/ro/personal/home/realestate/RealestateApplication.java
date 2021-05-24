@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /*
+
 TODO - imi apare un pop-up nou in momentul in care fac refresh la pagina (fac astfel de refresh in Page lini 86). Acest lucru cauzeaza sa mi se inchida programul. Am incercat sa rezolv punand 2 refresuri, dar daca mai apare trebuie sa repar.
 TODO - confirmation prompts, gen: "Are you sure?" before all Form Submisions
 TODO - loading screen for all Form Submisions

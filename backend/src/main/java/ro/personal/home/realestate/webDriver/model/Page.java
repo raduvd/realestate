@@ -71,8 +71,6 @@ public class Page {
                 });
         return webDriver.findElement(ELEMENT_ACTIVE_PAGE_NUMBER);
     }
-
-
     /**
      * "ActivePageNumber" is one of the last element on the page, so when the page is active, we can safely say the page is loaded.
      */
